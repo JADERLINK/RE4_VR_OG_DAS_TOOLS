@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.35931.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RE4_VR_OG_DAS_OFFSETKEY_TOOL", "RE4_VR_OG_DAS_OFFSETKEY_TOOL\RE4_VR_OG_DAS_OFFSETKEY_TOOL.csproj", "{003EA345-0E67-423C-A0A8-45F9B1B8F708}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RE4_VR_OG_NEWDAS_TOOL", "RE4_VR_OG_NEWDAS_TOOL\RE4_VR_OG_NEWDAS_TOOL.csproj", "{60B712A6-0686-42DB-A1D5-C88D58CE4308}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RE4_VR_OG_INSERTDAS_TOOL", "RE4_VR_OG_INSERTDAS_TOOL\RE4_VR_OG_INSERTDAS_TOOL.csproj", "{79BB50CD-96D5-427B-AE2B-74420CB6482E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{003EA345-0E67-423C-A0A8-45F9B1B8F708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{003EA345-0E67-423C-A0A8-45F9B1B8F708}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{003EA345-0E67-423C-A0A8-45F9B1B8F708}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{003EA345-0E67-423C-A0A8-45F9B1B8F708}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60B712A6-0686-42DB-A1D5-C88D58CE4308}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60B712A6-0686-42DB-A1D5-C88D58CE4308}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60B712A6-0686-42DB-A1D5-C88D58CE4308}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60B712A6-0686-42DB-A1D5-C88D58CE4308}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79BB50CD-96D5-427B-AE2B-74420CB6482E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79BB50CD-96D5-427B-AE2B-74420CB6482E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79BB50CD-96D5-427B-AE2B-74420CB6482E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79BB50CD-96D5-427B-AE2B-74420CB6482E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1D92DDC0-694D-4514-9CEA-F9452C00254E}
+	EndGlobalSection
+EndGlobal
