@@ -50,7 +50,8 @@ namespace RE4_VR_OG_NEWDAS_TOOL_REPACK
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error to read file: " + dat[i].fileInfo.Name + Environment.NewLine + " ex: " + ex);
+                    Console.WriteLine("Error to read file: " + dat[i].fileInfo.Name);
+                    Console.WriteLine(ex);
                 }
             }
 

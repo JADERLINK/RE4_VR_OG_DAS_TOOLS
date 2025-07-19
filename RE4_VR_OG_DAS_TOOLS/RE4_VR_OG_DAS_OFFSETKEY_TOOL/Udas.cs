@@ -12,8 +12,8 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
     {
         public int SoundFlag = -1;
         public int DatAmount = 0;
-        public (string name, uint offset, int length)[] DatFiles = null;
-        public (string name, uint offset, uint length) SndPath;
+        public (string fullName, uint offset, int length, string format)[] DatFiles = null;
+        public (string fullName, uint offset, uint length) SndPath;
 
 
         public Udas(StreamWriter idxj, Stream readStream, string baseName, string[] SelectedFormats) 
@@ -44,9 +44,9 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
                 temp += 32;
             }
 
-            if (UdasList[0].offset > readStream.Length && UdasList[0].offset > 0x1000)
+            if (UdasList.Count == 0 || UdasList[0].offset >= readStream.Length || UdasList[0].offset >= 0x01_00_00)
             {
-                Console.WriteLine("Error extracting UDAS file, first offset is invalid!");
+                Console.WriteLine("Error extracting file, first offset is invalid!");
                 return;
             }
 
@@ -116,25 +116,24 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
                     SoundFlag = (int)type;
                     if (SelectedFormats == null || SelectedFormats.Contains("SND"))
                     {
-                        idxj?.WriteLine("UDAS_SOUNDFLAG:" + ((int)type).ToString());
+                        idxj.WriteLine("UDAS_SOUNDFLAG:" + ((int)type).ToString());
                     }
                    
-
                     uint startOffset = (uint)UdasList[i].offset;
                     uint length = (uint)(readStream.Length - startOffset);
 
                     //end
                     if (length > 0)
                     {
-                        string FileFullNameEnd = Path.Combine(baseName, baseName + "_END.SND");
+                        string fullNameSND = Path.Combine(baseName, baseName + "_END.SND");
 
                         if (SelectedFormats == null || SelectedFormats.Contains("SND"))
                         {
-                            idxj?.WriteLine("UDAS_END:" + FileFullNameEnd + " : " + startOffset.ToString("D") + " : " + length.ToString("D"));
+                            idxj.WriteLine("UDAS_END:" + fullNameSND + " : " + startOffset.ToString("D") + " : " + length.ToString("D"));
                         }
                        
 
-                        SndPath = (FileFullNameEnd, startOffset, length);
+                        SndPath = (fullNameSND, startOffset, length);
 
                     }
 
@@ -142,15 +141,15 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
                 }
                 else if (type != 0xFFFFFFFF)
                 {
-                    idxj?.WriteLine($"# ERROR_FLAG{i:D1}:" + ((int)type).ToString());
+                    idxj.WriteLine($"# ERROR_FLAG{i:D1}:" + ((int)type).ToString());
 
                     int startOffset = (int)UdasList[i].offset;
                     int length = (int)(readStream.Length - startOffset);
 
                     if (length > 0)
                     {
-                        string FileFullName = Path.Combine(baseName, baseName + $"_ERROR{i:D1}.HEX");
-                        idxj?.WriteLine($"# ERROR_FILE{i:D1}:" + FileFullName);
+                        string fullName = Path.Combine(baseName, baseName + $"_ERROR{i:D1}.HEX");
+                        idxj.WriteLine($"# ERROR_FILE{i:D1}:" + fullName);
                     }
                 }
             }
@@ -159,9 +158,9 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
             {
                 if (ExtraDatOffset != null && ExtraDatOffset.Length > 0)
                 {
-                    idxj?.WriteLine("");
-                    idxj?.WriteLine("# Spaces without content:");
-                    idxj?.WriteLine("# Offset : Length");
+                    idxj.WriteLine("");
+                    idxj.WriteLine("# Spaces without content:");
+                    idxj.WriteLine("# Offset : Length");
 
                     foreach (var val in ExtraDatOffset.OrderBy(x => x))
                     {
@@ -177,17 +176,17 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
                         }
                         int subLength = (int)(nextOfset - myOffset);
 
-                        idxj?.WriteLine("# " + myOffset.ToString("D") + " : " + subLength.ToString("D"));
+                        idxj.WriteLine("# " + myOffset.ToString("D") + " : " + subLength.ToString("D"));
                     }
                 }
 
                 if (ExtraEmptyFileID != null && ExtraEmptyFileID.Length > 0)
                 {
-                    idxj?.WriteLine("");
-                    idxj?.WriteLine("# File IDs without content:");
+                    idxj.WriteLine("");
+                    idxj.WriteLine("# File IDs without content:");
                     foreach (var item in ExtraEmptyFileID.OrderBy(x => x))
                     {
-                        idxj?.WriteLine("# DAT_" + item.ToString("D3"));
+                        idxj.WriteLine("# DAT_" + item.ToString("D3"));
                     }
                 }
             }

@@ -19,7 +19,7 @@ namespace RE4_VR_OG_INSERTDAS_TOOL.IINSERT
             uint amount = br.ReadUInt32();
             if (amount >= 0x010000)
             {
-                Console.WriteLine("Invalid dat file!");
+                Console.WriteLine("Invalid file!");
                 return;
             }
 

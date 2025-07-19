@@ -11,7 +11,7 @@ namespace RE4_VR_OG_NEWDAS_TOOL_REPACK
     {
         public RepackJ(FileInfo info) 
         {
-            StreamReader idxj = null;
+            StreamReader idxj;
          
             try
             {
@@ -29,60 +29,56 @@ namespace RE4_VR_OG_NEWDAS_TOOL_REPACK
             string UDAS_END = null;
             Dictionary<string, (string DatID, string FileName, uint offsetKey)> Arqs = new Dictionary<string, (string DatID, string FileName, uint offsetKey)>();
 
-            string endLine = "";
-            while (endLine != null)
+            while (!idxj.EndOfStream)
             {
-                endLine = idxj.ReadLine();
+                string line = idxj.ReadLine()?.Trim();
 
-                if (endLine != null)
+                if (!(string.IsNullOrEmpty(line)
+                   || line.StartsWith("#")
+                   || line.StartsWith("\\")
+                   || line.StartsWith("/")
+                   || line.StartsWith(":")
+                   || line.StartsWith("!")
+                   || line.StartsWith("@")
+                ))
                 {
-                    endLine = endLine.Trim();
-
-                    if (!(endLine.Length == 0
-                        || endLine.StartsWith("#")
-                        || endLine.StartsWith("\\")
-                        || endLine.StartsWith("/")
-                        || endLine.StartsWith(":")
-                        || endLine.StartsWith("!")
-                        ))
+                    var split = line.Split(new char[] { ':' });
+                    if (split.Length >= 2)
                     {
-                        var split = endLine.Split(new char[] { ':' });
-                        if (split.Length >= 2)
+                        string key = split[0].ToUpperInvariant().Trim();
+                        string value = split[1].Trim().Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar);
+
+                        if (key.Contains("FILE_FORMAT"))
                         {
-                            string key = split[0].ToUpperInvariant().Trim();
+                            FILE_FORMAT = value;
+                        }
+                        else if (key.Contains("UDAS_END"))
+                        {
+                            UDAS_END = value;
+                        }
+                        else if (key.Contains("UDAS_SOUNDFLAG"))
+                        {
+                            int.TryParse(value, out UDAS_SOUNDFLAG);
+                        }
+                        else if (key.Contains("DAT_AMOUNT"))
+                        {
+                            uint.TryParse(value, out DAT_AMOUNT);
+                        }
+                        else if (key.StartsWith("DAT"))
+                        {
+                            string datId = key;
+                            string fileName = value;
+                            uint offsetKey = 0;
 
-                            if (key.Contains("FILE_FORMAT"))
+                            if (split.Length >= 3)
                             {
-                                FILE_FORMAT = split[1].Trim();
+                                uint.TryParse(split[2].Trim(), out offsetKey);
                             }
-                            else if (key.Contains("UDAS_END"))
-                            {
-                                UDAS_END = split[1].Trim();
-                            }
-                            else if (key.Contains("UDAS_SOUNDFLAG"))
-                            {
-                                int.TryParse(split[1].Trim(), out UDAS_SOUNDFLAG);
-                            }
-                            else if (key.Contains("DAT_AMOUNT"))
-                            {
-                                uint.TryParse(split[1].Trim(), out DAT_AMOUNT);
-                            }
-                            else if (key.StartsWith("DAT"))
-                            {
-                                string datId = key;
-                                string FileName = split[1].Trim();
-                                uint offsetKey = 0;
 
-                                if (split.Length >= 3)
-                                {
-                                    uint.TryParse(split[2].Trim(), out offsetKey);
-                                }
-
-                                Arqs.Add(datId, (datId, FileName, offsetKey));
-
-                            }
+                            Arqs.Add(datId, (datId, fileName, offsetKey));
 
                         }
+
                     }
                 }
 
@@ -117,13 +113,13 @@ namespace RE4_VR_OG_NEWDAS_TOOL_REPACK
 
             Console.WriteLine("FILE_FORMAT: " + FILE_FORMAT);
 
-            FileStream stream = null;
+            FileStream stream;
 
             try
             {
-                string EndFileName = Path.ChangeExtension(info.FullName, FILE_FORMAT.ToLowerInvariant());
-                FileInfo EndFileInfo = new FileInfo(EndFileName);
-                stream = EndFileInfo.Create();
+                string endFileName = Path.ChangeExtension(info.FullName, FILE_FORMAT.ToLowerInvariant());
+                FileInfo endFileInfo = new FileInfo(endFileName);
+                stream = endFileInfo.Create();
             }
             catch (Exception ex)
             {

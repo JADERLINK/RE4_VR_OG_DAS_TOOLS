@@ -20,7 +20,7 @@ namespace RE4_VR_OG_INSERTDAS_TOOL
             int amount = br.ReadInt32();
             if (amount >= 0x010000)
             {
-                Console.WriteLine("Invalid dat file!");
+                Console.WriteLine("Invalid file!");
                 return;
             }
 
@@ -37,7 +37,7 @@ namespace RE4_VR_OG_INSERTDAS_TOOL
             readStream.Read(offsetblock, 0, blocklength);
             readStream.Read(nameblock, 0, blocklength);
 
-            (uint offset, string FileFullName, string format)[] fileList = new (uint offset, string FileFullName, string format)[amount];
+            (uint offset, string fullName, string format)[] fileList = new (uint offset, string fullName, string format)[amount];
 
             int Temp = 0;
             for (int i = 0; i < amount; i++)
@@ -46,13 +46,13 @@ namespace RE4_VR_OG_INSERTDAS_TOOL
                 string format = Encoding.ASCII.GetString(nameblock, Temp, 4);
                 format = ValidateFormat(format).ToUpperInvariant();
 
-                string FileFullName = Path.Combine(baseName, baseName + "_" + i.ToString("D3"));
+                string fullName = Path.Combine(baseName, baseName + "_" + i.ToString("D3"));
                 if (format.Length > 0)
                 {
-                    FileFullName += "." + format;
+                    fullName += "." + format;
                 }
 
-                fileList[i] = (offset, FileFullName, format);
+                fileList[i] = (offset, fullName, format);
 
                 Temp += 4;
             }
@@ -66,9 +66,9 @@ namespace RE4_VR_OG_INSERTDAS_TOOL
 
             for (int i = 0; i < fileList.Length; i++)
             {
-                DatFiles[i] = fileList[i].FileFullName;
+                DatFiles[i] = fileList[i].fullName;
 
-                string Line = "(." + fileList[i].format + ") DAT_" + i.ToString("D3") + ":" + fileList[i].FileFullName;
+                string Line = "(." + fileList[i].format + ") DAT_" + i.ToString("D3") + ":" + fileList[i].fullName;
                 idxj?.WriteLine(Line);
                 idxj?.WriteLine();
             }

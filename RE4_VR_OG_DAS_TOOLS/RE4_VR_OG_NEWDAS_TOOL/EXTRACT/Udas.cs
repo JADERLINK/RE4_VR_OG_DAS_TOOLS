@@ -42,9 +42,9 @@ namespace RE4_VR_OG_NEWDAS_TOOL_EXTRACT
                 temp += 32;
             }
 
-            if (UdasList[0].offset > readStream.Length && UdasList[0].offset > 0x1000)
+            if (UdasList.Count == 0 || UdasList[0].offset >= readStream.Length || UdasList[0].offset >= 0x01_00_00)
             {
-                Console.WriteLine("Error extracting UDAS file, first offset is invalid!");
+                Console.WriteLine("Error extracting file, first offset is invalid!");
                 return;
             }
 
@@ -90,9 +90,11 @@ namespace RE4_VR_OG_NEWDAS_TOOL_EXTRACT
                     {
                         Directory.CreateDirectory(Path.Combine(directory, baseName));
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         Console.WriteLine("Failed to create directory: " + Path.Combine(directory, baseName));
+                        Console.WriteLine(ex);
+                        return;
                     }
                 }
 
@@ -102,15 +104,15 @@ namespace RE4_VR_OG_NEWDAS_TOOL_EXTRACT
                 readStream.Position = 0;
                 readStream.Read(udasTop, 0, udasTopLength);
 
-                string FileFullName = Path.Combine(baseName, baseName + "_TOP.HEX");
+                string fullName = Path.Combine(baseName, baseName + "_TOP.HEX");
 
                 try
                 {
-                    File.WriteAllBytes(Path.Combine(directory, FileFullName), udasTop);
+                    File.WriteAllBytes(Path.Combine(directory, fullName), udasTop);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(FileFullName + ": " + ex);
+                    Console.WriteLine(fullName + ": " + ex);
                 }         
 
             }
@@ -192,15 +194,15 @@ namespace RE4_VR_OG_NEWDAS_TOOL_EXTRACT
                             readStream.Position = subOffset;
                             readStream.Read(udasMiddle, 0, subLength);
 
-                            string FileFullName = Path.Combine(baseName,  baseName + "_MIDDLE.HEX");
+                            string fullName = Path.Combine(baseName,  baseName + "_MIDDLE.HEX");
 
                             try
                             {
-                                File.WriteAllBytes(Path.Combine(directory, FileFullName), udasMiddle);
+                                File.WriteAllBytes(Path.Combine(directory, fullName), udasMiddle);
                             }
                             catch (Exception ex)
                             {
-                                Console.WriteLine(FileFullName + ": " + ex);
+                                Console.WriteLine(fullName + ": " + ex);
                             }
                         }
                     }
@@ -213,18 +215,18 @@ namespace RE4_VR_OG_NEWDAS_TOOL_EXTRACT
                         readStream.Position = startOffset;
                         readStream.Read(udasEnd, 0, lengthSND);
 
-                        string FileFullNameEnd = Path.Combine(baseName, baseName + "_END.SND");
-                        idxj?.WriteLine("UDAS_END:" + FileFullNameEnd);
+                        string fullNameSND = Path.Combine(baseName, baseName + "_END.SND");
+                        idxj?.WriteLine("UDAS_END:" + fullNameSND);
 
-                        SndPath = FileFullNameEnd;
+                        SndPath = fullNameSND;
 
                         try
                         {
-                            File.WriteAllBytes(Path.Combine(directory, FileFullNameEnd), udasEnd);
+                            File.WriteAllBytes(Path.Combine(directory, fullNameSND), udasEnd);
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine(FileFullNameEnd + ": " + ex);
+                            Console.WriteLine(fullNameSND + ": " + ex);
                         }
  
                     }
@@ -245,16 +247,16 @@ namespace RE4_VR_OG_NEWDAS_TOOL_EXTRACT
                         readStream.Position = startOffset;
                         readStream.Read(udasError, 0, length);
 
-                        string FileFullName = Path.Combine(baseName, baseName + $"_ERROR{i:D1}.HEX");
-                        idxj?.WriteLine($"# ERROR_FILE{i:D1}:" + FileFullName);
+                        string fullName = Path.Combine(baseName, baseName + $"_ERROR{i:D1}.HEX");
+                        idxj?.WriteLine($"# ERROR_FILE{i:D1}:" + fullName);
 
                         try
                         {
-                            File.WriteAllBytes(Path.Combine(directory, FileFullName), udasError);
+                            File.WriteAllBytes(Path.Combine(directory, fullName), udasError);
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine(FileFullName + ": " + ex);
+                            Console.WriteLine(fullName + ": " + ex);
                         }
 
                     }

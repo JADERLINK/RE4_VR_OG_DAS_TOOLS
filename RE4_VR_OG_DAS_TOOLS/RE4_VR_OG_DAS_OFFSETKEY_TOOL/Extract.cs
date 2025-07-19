@@ -9,48 +9,52 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
 {
     internal class Extract
     {
-        public Extract(FileInfo info, FileFormat fileFormat, string[] SelectedFormats) 
+        public Extract(FileInfo info, FileFormat fileFormat, string[] SelectedFormats)
         {
-            FileStream stream = null;
-            StreamWriter idxj = null;
+            FileStream stream;
+            StreamWriter idxj;
 
             try
             {
                 stream = info.OpenRead();
-
-                string idxjFileName = Path.ChangeExtension(info.FullName, ".txt2");
-                FileInfo idxjInfo = new FileInfo(idxjFileName);
-                idxj = idxjInfo.CreateText();
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex);
-            }
-
-            if (stream == null || idxj == null)
-            {
                 return;
             }
 
-            idxj?.WriteLine("# github.com/JADERLINK/RE4_VR_OG_DAS_TOOLS");
-            idxj?.WriteLine("# youtube.com/@JADERLINK");
-            idxj?.WriteLine("# RE4_VR_OG_DAS_OFFSETKEY_TOOL By JADERLINK");
+            try
+            {
+                FileInfo idxjInfo = new FileInfo(Path.ChangeExtension(info.FullName, ".txt2"));
+                idxj = idxjInfo.CreateText();
+            }
+            catch (Exception ex)
+            {
+                stream.Close();
+                Console.WriteLine("Error: " + ex);
+                return;
+            }
+
+            idxj.WriteLine("# github.com/JADERLINK/RE4_VR_OG_DAS_TOOLS");
+            idxj.WriteLine("# youtube.com/@JADERLINK");
+            idxj.WriteLine("# RE4_VR_OG_DAS_OFFSETKEY_TOOL By JADERLINK");
             switch (fileFormat)
             {
                 case FileFormat.DAT:
-                    idxj?.WriteLine("FILE_FORMAT:DAT");
+                    idxj.WriteLine("FILE_FORMAT:DAT");
                     break;
                 case FileFormat.MAP:
-                    idxj?.WriteLine("FILE_FORMAT:MAP");
+                    idxj.WriteLine("FILE_FORMAT:MAP");
                     break;
                 case FileFormat.UDAS:
-                    idxj?.WriteLine("FILE_FORMAT:UDAS");
+                    idxj.WriteLine("FILE_FORMAT:UDAS");
                     break;
                 case FileFormat.DAS:
-                    idxj?.WriteLine("FILE_FORMAT:DAS");
+                    idxj.WriteLine("FILE_FORMAT:DAS");
                     break;
                 default:
-                    idxj?.WriteLine("FILE_FORMAT:NULL");
+                    idxj.WriteLine("FILE_FORMAT:NULL");
                     break;
             }
 
@@ -73,10 +77,9 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
 
                     for (int i = 0; i < a.DatFiles.Length; i++)
                     {
-                        string format = string.Concat(a.DatFiles[i].name.ToUpperInvariant().Skip(a.DatFiles[i].name.Length - 3));
-                        if (SelectedFormats == null || SelectedFormats.Contains(format))
+                        if (SelectedFormats == null || SelectedFormats.Contains(a.DatFiles[i].format))
                         {
-                            Console.WriteLine("File_" + i + " = " + a.DatFiles[i].name + " : " + a.DatFiles[i].offset.ToString("D") + " : " + a.DatFiles[i].length.ToString("D"));
+                            Console.WriteLine("File_" + i + " = " + a.DatFiles[i].fullName + " : " + a.DatFiles[i].offset.ToString("D") + " : " + a.DatFiles[i].length.ToString("D"));
                         }
                     }
 
@@ -96,7 +99,7 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
 
                     // .idx
                     int Amount = a.DatAmount;
-                    if (a.SndPath.name != null)
+                    if (a.SndPath.fullName != null)
                     {
                         Amount += 1;
                     }
@@ -109,15 +112,14 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
 
                     for (int i = 0; i < a.DatFiles.Length; i++)
                     {
-                        string format = string.Concat(a.DatFiles[i].name.ToUpperInvariant().Skip(a.DatFiles[i].name.Length - 3));
-                        if (SelectedFormats == null || SelectedFormats.Contains(format))
+                        if (SelectedFormats == null || SelectedFormats.Contains(a.DatFiles[i].format))
                         {
-                            Console.WriteLine("File_" + i + " = " + a.DatFiles[i].name + " : " + a.DatFiles[i].offset.ToString("D") + " : " + a.DatFiles[i].length.ToString("D"));
+                            Console.WriteLine("File_" + i + " = " + a.DatFiles[i].fullName + " : " + a.DatFiles[i].offset.ToString("D") + " : " + a.DatFiles[i].length.ToString("D"));
                         }
                     }
-                    if (a.SndPath.name != null && (SelectedFormats == null || SelectedFormats.Contains("SND")))
+                    if (a.SndPath.fullName != null && (SelectedFormats == null || SelectedFormats.Contains("SND")))
                     {
-                        Console.WriteLine("File_" + (Amount - 1) + " = " + a.SndPath.name + " : " + a.SndPath.offset.ToString("D") + " : " + a.SndPath.length.ToString("D"));
+                        Console.WriteLine("File_" + (Amount - 1) + " = " + a.SndPath.fullName + " : " + a.SndPath.offset.ToString("D") + " : " + a.SndPath.length.ToString("D"));
                     }
                 }
                 catch (Exception ex)
@@ -128,7 +130,7 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
             }
 
             stream.Close();
-            idxj?.Close();
+            idxj.Close();
         }
 
     }

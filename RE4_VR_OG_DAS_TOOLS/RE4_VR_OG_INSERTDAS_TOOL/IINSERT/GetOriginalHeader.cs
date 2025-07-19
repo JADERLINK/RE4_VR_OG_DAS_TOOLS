@@ -29,7 +29,7 @@ namespace RE4_VR_OG_INSERTDAS_TOOL.IINSERT
         public bool HasExtraData = false;
 
 
-        public GetOriginalHeader(FileStream stream)
+        public GetOriginalHeader(Stream stream)
         {
             // obtem os dados do arquivo original.
 
@@ -58,9 +58,9 @@ namespace RE4_VR_OG_INSERTDAS_TOOL.IINSERT
                 temp += 32;
             }
 
-            if (UdasList[0].offset > stream.Length && UdasList[0].offset > 0x1000)
+            if (UdasList.Count == 0 || UdasList[0].offset >= stream.Length || UdasList[0].offset >= 0x01_00_00)
             {
-                Console.WriteLine("Error extracting UDAS file, first offset is invalid!");
+                Console.WriteLine("Error in file, first offset is invalid!");
                 has_error_on_load = true;
                 return;
             }
@@ -161,7 +161,7 @@ namespace RE4_VR_OG_INSERTDAS_TOOL.IINSERT
 
         }
 
-        public byte[] SND_CONTENT(FileStream stream) 
+        public byte[] SND_CONTENT(Stream stream)
         {
             byte[] SND_CONTENT = new byte[Original_SND_Length];
 

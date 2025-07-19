@@ -32,7 +32,7 @@ namespace RE4_VR_OG_NEWDAS_TOOL_EXTRACT
             int amount = br.ReadInt32();
             if (amount >= 0x010000)
             {
-                Console.WriteLine("Invalid dat file!");
+                Console.WriteLine("Invalid file!");
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace RE4_VR_OG_NEWDAS_TOOL_EXTRACT
             readStream.Read(offsetblock, 0, blocklength);
             readStream.Read(nameblock, 0, blocklength);
 
-            (uint offset, string FileFullName, string format)[] fileList = new (uint offset, string FileFullName, string format)[amount];
+            (uint offset, string fullName, string format)[] fileList = new (uint offset, string fullName, string format)[amount];
 
             int Temp = 0;
             for (int i = 0; i < amount; i++)
@@ -58,13 +58,13 @@ namespace RE4_VR_OG_NEWDAS_TOOL_EXTRACT
                 string format = Encoding.ASCII.GetString(nameblock, Temp, 4);
                 format = ValidateFormat(format).ToUpperInvariant();
 
-                string FileFullName = Path.Combine(baseName, baseName + "_" + i.ToString("D3"));
+                string fullName = Path.Combine(baseName, baseName + "_" + i.ToString("D3"));
                 if (format.Length > 0)
                 {
-                    FileFullName += "." + format;
+                    fullName += "." + format;
                 }
 
-                fileList[i] = (offset, FileFullName, format);
+                fileList[i] = (offset, fullName, format);
 
                 Temp += 4;
             }
@@ -75,11 +75,12 @@ namespace RE4_VR_OG_NEWDAS_TOOL_EXTRACT
                 {
                     Directory.CreateDirectory(Path.Combine(directory, baseName));
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     Console.WriteLine("Failed to create directory: " + Path.Combine(directory, baseName));
+                    Console.WriteLine(ex);
+                    return;
                 }
-               
             }
 
             DatFiles = new string[amount];
@@ -98,7 +99,7 @@ namespace RE4_VR_OG_NEWDAS_TOOL_EXTRACT
 
             for (int i = 0; i < fileList.Length; i++)
             {
-                DatFiles[i] = fileList[i].FileFullName;
+                DatFiles[i] = fileList[i].fullName;
 
                 uint myOffset = fileList[i].offset;
                 uint nextOfset = myOffset; // Inicialmente define o mesmo offset. Daí o 'length' fica 0;
@@ -129,11 +130,11 @@ namespace RE4_VR_OG_NEWDAS_TOOL_EXTRACT
 
                     try
                     {
-                        File.WriteAllBytes(Path.Combine(directory, fileList[i].FileFullName), endfile);
+                        File.WriteAllBytes(Path.Combine(directory, fileList[i].fullName), endfile);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(fileList[i].FileFullName + ": " + ex);
+                        Console.WriteLine(fileList[i].fullName + ": " + ex);
                     }
                   
                 }
@@ -147,7 +148,7 @@ namespace RE4_VR_OG_NEWDAS_TOOL_EXTRACT
                     offsetKey = fileList[i].offset;
                 }
 
-                string Line = "DAT_" + i.ToString("D3") + " : " + fileList[i].FileFullName + " : " + offsetKey.ToString("D");
+                string Line = "DAT_" + i.ToString("D3") + " : " + fileList[i].fullName + " : " + offsetKey.ToString("D");
                 idxj?.WriteLine(Line);
             }
 

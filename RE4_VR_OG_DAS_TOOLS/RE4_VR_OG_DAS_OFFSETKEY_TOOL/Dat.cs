@@ -11,9 +11,9 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
     internal class Dat
     {
         public int DatAmount = 0;
-        public (string name, uint offset, int length)[] DatFiles = null;
+        public (string fullName, uint offset, int length, string format)[] DatFiles = null;
 
-        public uint[] UordenedOffsets;
+        public uint[] UordenedOffsets = null;
 
         public Dat(
             StreamWriter idxj,
@@ -33,11 +33,11 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
             int amount = br.ReadInt32();
             if (amount >= 0x010000)
             {
-                Console.WriteLine("Invalid dat file!");
+                Console.WriteLine("Invalid file!");
                 return;
             }
 
-            idxj?.WriteLine("DAT_AMOUNT:" + amount);
+            idxj.WriteLine("DAT_AMOUNT:" + amount);
             DatAmount = amount;
 
             int blocklength = amount * 4;
@@ -50,7 +50,7 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
             readStream.Read(offsetblock, 0, blocklength);
             readStream.Read(nameblock, 0, blocklength);
 
-            (uint offset, string FileFullName, string format)[] fileList = new (uint offset, string FileFullName, string format)[amount];
+            (uint offset, string fullName, string format)[] fileList = new (uint offset, string fullName, string format)[amount];
 
             int Temp = 0;
             for (int i = 0; i < amount; i++)
@@ -59,18 +59,18 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
                 string format = Encoding.ASCII.GetString(nameblock, Temp, 4);
                 format = ValidateFormat(format).ToUpperInvariant();
 
-                string FileFullName = Path.Combine(baseName, baseName + "_" + i.ToString("D3"));
+                string fullName = Path.Combine(baseName, baseName + "_" + i.ToString("D3"));
                 if (format.Length > 0)
                 {
-                    FileFullName += "." + format;
+                    fullName += "." + format;
                 }
 
-                fileList[i] = (offset, FileFullName, format);
+                fileList[i] = (offset, fullName, format);
 
                 Temp += 4;
             }
 
-            DatFiles = new (string name, uint offset, int length)[amount];
+            DatFiles = new (string fullName, uint offset, int length, string format)[amount];
 
             List<uint> ordenedOffsets = new List<uint>();
             ordenedOffsets.AddRange(fileList.Select(x => x.offset));
@@ -82,7 +82,7 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
             }
             ordenedOffsets = ordenedOffsets.OrderByDescending(x => x).ToList();
 
-            idxj?.WriteLine("# File-ID : File-Name : OffsetKey : Length");
+            idxj.WriteLine("# File-ID : File-Name : OffsetKey : Length");
 
             for (int i = 0; i < fileList.Length; i++)
             {
@@ -108,13 +108,13 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
                 // conteudo do arquivo
                 int subFileLength = (int)(nextOfset - myOffset);
 
-                DatFiles[i] = (fileList[i].FileFullName, myOffset, subFileLength);
+                DatFiles[i] = (fileList[i].fullName, myOffset, subFileLength, fileList[i].format);
 
-                string Line = "DAT_" + i.ToString("D3") + " : " + fileList[i].FileFullName + " : " + myOffset.ToString("D") + " : " + subFileLength.ToString("D");
+                string Line = "DAT_" + i.ToString("D3") + " : " + fileList[i].fullName + " : " + myOffset.ToString("D") + " : " + subFileLength.ToString("D");
 
                 if (SelectedFormats == null || SelectedFormats.Contains(fileList[i].format))
                 {
-                    idxj?.WriteLine(Line);
+                    idxj.WriteLine(Line);
                 }
              
             }

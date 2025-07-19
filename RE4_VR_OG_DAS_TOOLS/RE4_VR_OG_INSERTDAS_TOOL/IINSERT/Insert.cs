@@ -19,12 +19,11 @@ namespace RE4_VR_OG_INSERTDAS_TOOL.IINSERT
 
             //------------------------------------
 
-            FileStream stream = null;
+            FileStream stream;
             try
             {
-                string EndFileName = Path.ChangeExtension(info.FullName, "das");
-                FileInfo EndFileInfo = new FileInfo(EndFileName);
-                stream = EndFileInfo.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                FileInfo endFileInfo = new FileInfo(Path.ChangeExtension(info.FullName, "das"));
+                stream = endFileInfo.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
             }
             catch (Exception ex)
             {
@@ -75,7 +74,8 @@ namespace RE4_VR_OG_INSERTDAS_TOOL.IINSERT
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Error to read file: " + filesInfo.toInsert[i].fileInfo.Name + Environment.NewLine + " ex: " + ex);
+                        Console.WriteLine("Error to read file: " + filesInfo.toInsert[i].fileInfo.Name);
+                        Console.WriteLine(ex);
                     }
 
                     // grava arquivo
@@ -164,7 +164,8 @@ namespace RE4_VR_OG_INSERTDAS_TOOL.IINSERT
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Error to read file: " + a.Name + Environment.NewLine + " ex: " + ex);
+                        Console.WriteLine("Error to read file: " + a.Name);
+                        Console.WriteLine(ex);
                     }
 
                     EndLength = SND_Offset + aLength;

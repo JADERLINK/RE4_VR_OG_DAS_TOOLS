@@ -29,53 +29,49 @@ namespace RE4_VR_OG_INSERTDAS_TOOL.IINSERT
                 return;
             }
 
-            string endLine = "";
-            while (endLine != null)
+            while (!idxj.EndOfStream)
             {
-                endLine = idxj.ReadLine();
+                string line = idxj.ReadLine()?.Trim();
 
-                if (endLine != null)
+                if (!(string.IsNullOrEmpty(line)
+                  || line.StartsWith("#")
+                  || line.StartsWith("\\")
+                  || line.StartsWith("/")
+                  || line.StartsWith(":")
+                  || line.StartsWith("!")
+                  || line.StartsWith("@")
+                  || line.StartsWith("(")
+                  ))
                 {
-                    endLine = endLine.Trim();
-
-                    if (!(endLine.Length == 0
-                        || endLine.StartsWith("#")
-                        || endLine.StartsWith("\\")
-                        || endLine.StartsWith("/")
-                        || endLine.StartsWith(":")
-                        || endLine.StartsWith("!")
-                        || endLine.StartsWith("@")
-                        || endLine.StartsWith("(")
-                        ))
+                    var split = line.Split(new char[] { ':' });
+                    if (split.Length >= 2)
                     {
-                        var split = endLine.Split(new char[] { ':' });
-                        if (split.Length >= 2)
+                        string key = split[0].ToUpperInvariant().Trim();
+                        string value = split[1].Trim().Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar);
+
+                        if (key.StartsWith("UDAS_END"))
                         {
-                            string key = split[0].ToUpperInvariant().Trim();
+                            UDAS_END = value;
+                            has_UDAS_END = true;
+                        }
+                        else if (key.StartsWith("DAT_"))
+                        {
+                            var datIdSplit = key.Split('_');
+                            if (datIdSplit.Length >= 2)
+                            {
+                                int.TryParse(datIdSplit[1], out int Id);
+                                string FileName = value;
 
-                            if (key.StartsWith("UDAS_END"))
-                            {
-                                UDAS_END = split[1].Trim();
-                                has_UDAS_END = true;
-                            }
-                            else if (key.StartsWith("DAT_"))
-                            {
-                                var datIdSplit = key.Split('_');
-                                if (datIdSplit.Length >= 2)
+                                if (Id > -1)
                                 {
-                                    int.TryParse(datIdSplit[1], out int Id);
-                                    string FileName = split[1].Trim();
-
-                                    if (Id > -1)
-                                    {
-                                        Arqs.Add(Id, (key, FileName));
-                                    }
+                                    Arqs.Add(Id, (key, FileName));
                                 }
-
                             }
 
                         }
+
                     }
+
                 }
             }
 

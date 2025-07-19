@@ -18,7 +18,7 @@ namespace RE4_VR_OG_DAS_OFFSETKEY_TOOL
             Console.WriteLine("# By: JADERLINK");
             Console.WriteLine("# youtube.com/@JADERLINK");
             Console.WriteLine("# github.com/JADERLINK");
-            Console.WriteLine("# VERSION 1.2.1 (2025-06-15)");
+            Console.WriteLine("# VERSION 1.2.2 (2025-07-19)");
 
 
             bool usingBatFile = false;

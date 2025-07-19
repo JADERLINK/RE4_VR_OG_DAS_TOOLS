@@ -42,9 +42,9 @@ namespace RE4_VR_OG_INSERTDAS_TOOL
                 temp += 32;
             }
 
-            if (UdasList[0].offset > readStream.Length && UdasList[0].offset > 0x1000)
+            if (UdasList.Count == 0 || UdasList[0].offset >= readStream.Length || UdasList[0].offset >= 0x01_00_00)
             {
-                Console.WriteLine("Error extracting UDAS file, first offset is invalid!");
+                Console.WriteLine("Error extracting file, first offset is invalid!");
                 return;
             }
 
@@ -79,10 +79,10 @@ namespace RE4_VR_OG_INSERTDAS_TOOL
                     //end
                     if (length > 0)
                     {
-                        string FileFullNameEnd = Path.Combine(baseName, baseName + "_END.SND");
-                        idxj?.WriteLine("(.SND) UDAS_END:" + FileFullNameEnd);
+                        string fullNameSND = Path.Combine(baseName, baseName + "_END.SND");
+                        idxj?.WriteLine("(.SND) UDAS_END:" + fullNameSND);
 
-                        SndPath = FileFullNameEnd;
+                        SndPath = fullNameSND;
                     }
 
                     SoundFlag = (int)type;
@@ -99,8 +99,8 @@ namespace RE4_VR_OG_INSERTDAS_TOOL
 
                     if (length > 0)
                     {
-                        string FileFullName = Path.Combine(baseName, baseName + $"_ERROR{i:D1}.HEX");
-                        idxj?.WriteLine($"# ERROR_FILE{i:D1}:" + FileFullName);
+                        string fullName = Path.Combine(baseName, baseName + $"_ERROR{i:D1}.HEX");
+                        idxj?.WriteLine($"# ERROR_FILE{i:D1}:" + fullName);
                     }
                 }
             }

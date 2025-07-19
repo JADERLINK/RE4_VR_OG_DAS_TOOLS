@@ -26,7 +26,8 @@ namespace RE4_VR_OG_NEWDAS_TOOL_REPACK
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error to read file: " + udasGroup.End.fileInfo.Name + Environment.NewLine + " ex: " + ex);
+                    Console.WriteLine("Error to read file: " + udasGroup.End.fileInfo.Name);
+                    Console.WriteLine(ex);
                 }
             }
 

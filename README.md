@@ -8,9 +8,21 @@ Tool to edit DAS files of RE4VR OG version!
 
 Tool destinada a extrair e reconstruir os arquivos DAS da versão de RE4 VR OG, com a possibilidade de manter os Offset Originais de alguns arquivos, especialmente os arquivo BIN e TPL, pois o jogo os offsets que apontam para os arquivo para definir a sobreposição de modelos 3D e texturas, dentro dos arquivos do UE é chamado de "OffsetKey", no qual você pode manter o original com essas tools, ou verificar os novos offsets gerados, e mudar nos arquivos do UE, caso ao contrário os modelos 3D Ficaram invisíveis.
 
-<br>O que é um offset? Nesse caso, é um valor que indica onde está um arquivo dentro de outro arquivo, isto é, o arquivo DAS é, na verdade, um conjunto de arquivos, e o offset é um número para saber onde cada arquivo começa dentro do arquivo DAS, e o jogon no VR uso o valor do offset para saber qual é cada arquivo.
+O que é um offset? Nesse caso, é um valor que indica onde está um arquivo dentro de outro arquivo, isto é, o arquivo DAS é, na verdade, um conjunto de arquivos, e o offset é um número para saber onde cada arquivo começa dentro do arquivo DAS, e o jogon no VR uso o valor do offset para saber qual é cada arquivo.
 <br>Mas para acomodar todos os arquivos, caso você insira um arquivo maior, os offsets subsequentes mudam, as tools são feitas para fixar o offset de alguns arquivos (BINs e TPLs), e os outros serão colocados de maneira que não tenha sobreposição de arquivos dentro do DAS, mas tome cuidado com os offsets fixos, pois caso você fizer algo errado você pode sobrepor algum arquivo indevidamente.
 
+```
+Offsets for BINs can be found inside the "xx_meshTable" uasset files found at these locations:
+For Stages: VR4\Content\Blueprints\Room
+For Characters: VR4\Content\Blueprints\Characters\ 
+Offsets for TPLs can be found inside "DA_xxxx" uasset files here: VR4\Content\FX\BIO4\OriginalTextures\
+(used by the Original Effects when restored in uassets at VR4\Content\DataAssets\Particle)
+info by Glitch
+```
+
+**Update V.1.2.2**
+<br> Feito melhorias no código para compatibilidade com o Linux/Mono.
+<br> Adicionado suporte ao Linux via Mono e seu sistema de diretório.
 
 ## RE4_VR_OG_DAS_OFFSETKEY_TOOL.exe
 
@@ -35,4 +47,4 @@ Esta tool em vez de extrair e recriar um novo DAS, ele coloca os arquivos dentro
 
 
 **At.te: JADERLINK**
-<br>2025-06-15
+<br>2025-07-19
